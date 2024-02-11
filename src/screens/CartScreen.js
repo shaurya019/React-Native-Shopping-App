@@ -12,40 +12,26 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import MyBackButton from '../components/MyBackButton';
 import MyButton from '../components/MyButton';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  addToCart,
+  clearCart,
+  removeFromCart,
+} from '../redux/features/CartSlice';
 
 const CartScreen = () => {
   // hooks
+  const dispatch = useDispatch();
   const {navigate} = useNavigation();
+  const {cartData, totalAmount} = useSelector(state => state.cartItems);
 
   // functions
   const handleCheckout = () => {
+    dispatch(clearCart());
     Alert.alert('Order Success', 'Your order place successfully', [
       {text: 'OK', onPress: () => navigate('Home')},
     ]);
   };
-
-  // data
-  const data = [
-    {
-      id: 1,
-      title: 'iPhone 9',
-      description: 'An apple mobile which is nothing like apple',
-      price: 549,
-      discountPercentage: 12.96,
-      rating: 4.69,
-      stock: 94,
-      brand: 'Apple',
-      category: 'smartphones',
-      thumbnail: 'https://i.dummyjson.com/data/products/1/thumbnail.jpg',
-      images: [
-        'https://i.dummyjson.com/data/products/1/1.jpg',
-        'https://i.dummyjson.com/data/products/1/2.jpg',
-        'https://i.dummyjson.com/data/products/1/3.jpg',
-        'https://i.dummyjson.com/data/products/1/4.jpg',
-        'https://i.dummyjson.com/data/products/1/thumbnail.jpg',
-      ],
-    },
-  ];
 
   return (
     <View style={styles.mainContainer}>
@@ -53,7 +39,7 @@ const CartScreen = () => {
       <View style={styles.container}>
         <MyBackButton />
         <FlatList
-          data={data}
+          data={cartData}
           style={styles.flatlistStyle}
           renderItem={({item, index}) => {
             return (
@@ -66,13 +52,17 @@ const CartScreen = () => {
                   </View>
                 </View>
                 <View style={styles.twoBtn}>
-                  <Pressable style={styles.btnBox} onPress={() => {}}>
+                  <Pressable
+                    style={styles.btnBox}
+                    onPress={() => dispatch(removeFromCart(item.id))}>
                     <Text style={styles.btn}>-</Text>
                   </Pressable>
                   <Pressable>
                     <Text style={styles.amount}>{item.quantity}</Text>
                   </Pressable>
-                  <Pressable style={styles.btnBox} onPress={() => {}}>
+                  <Pressable
+                    style={styles.btnBox}
+                    onPress={() => dispatch(addToCart(item))}>
                     <Text style={styles.btn}>+</Text>
                   </Pressable>
                 </View>
@@ -84,7 +74,7 @@ const CartScreen = () => {
       <View style={styles.bottom}>
         <Text style={styles.totalAmount}>
           Total Amount:{'  '}
-          <Text style={styles.totalAmountPrice}>0$</Text>
+          <Text style={styles.totalAmountPrice}>{totalAmount}$</Text>
         </Text>
 
         <MyButton onPress={handleCheckout} title="Proceed to checkout" />

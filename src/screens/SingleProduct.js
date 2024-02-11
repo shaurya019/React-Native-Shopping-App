@@ -1,4 +1,4 @@
-\import {
+import {
   Image,
   Pressable,
   SafeAreaView,
@@ -40,7 +40,7 @@ const SingleProduct = () => {
       }
     };
     itemChecking();
-  }, [cartData]);
+  }, []);
 
   return (
     <View style={styles.container}>
